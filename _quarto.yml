@@ -9,5 +9,5 @@ website:
         text: Home
       - href: Zombies.qmd
         text: Zombies!
-      - href: EEB406_redo.qmd
+      - href: EEB406_redo.html
         text: EEB406 ReDo
