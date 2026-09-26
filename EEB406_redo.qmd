@@ -1,0 +1,180 @@
+---
+title: "I Can Do Better Now"
+format: html
+editor: visual
+---
+
+## Background
+
+Over a year ago, I took EEB406 at TMU (blg720 by TMU course code) and did some statistical analysis with R. Back then, I had no experience with R and that definetly shows. Since then, I have taken courses where gained some experience with R programming, learned about different data structures and how to manipulate data in R, and have a better understanding of R’s graphical tools. Because of this, I want to go back and re-write some of the work last year to help demonstrate some of the things I learned during my 3rd year of university.
+
+
+Below is an example of something I submitted as part of my EEB406 course project.
+
+```{r old example one}
+# Specific Conductivity
+library(car)
+library(readxl)
+data406 <- read_excel("EEB406 Readings.xlsx")
+names(data406)[names(data406) == "chloride_a"] <- "cl"
+names(data406)[names(data406) == "fluoride_a"] <- "f"
+names(data406)[names(data406) == "bromide_a"] <- "b"
+names(data406)[names(data406) == "sulfate_a"] <- "s"
+names(data406)[names(data406) == "sodium_c"] <- "na"
+names(data406)[names(data406) == "potassium_c"] <- "k"
+names(data406)[names(data406) == "lithium_c"] <- "l"
+names(data406)[names(data406) == "calcium_c"] <- "c"
+names(data406)[names(data406) == "magnesium_c"] <- "mg"
+names(data406)[names(data406) == "nitrate_a"] <- "n"
+data406$n <- as.numeric(data406$n)
+data406$cl <- as.numeric(data406$cl)
+data406$l <- as.numeric(data406$l)
+data406$f <- as.numeric(data406$f) 
+data406$b <- as.numeric(data406$b) 
+data406$s <- as.numeric(data406$s) 
+data406$na <- as.numeric(data406$na) 
+data406$k <- as.numeric(data406$k) 
+data406$c <- as.numeric(data406$c) 
+data406$mg <- as.numeric(data406$mg) 
+
+clf_scorrelation <- cor.test(data406$f, data406$cl, method = "spearman")
+print(clf_scorrelation)
+# 	Spearman's rank correlation rho
+# S = 6, p-value = 0.75
+# alternative hypothesis: true rho is not equal to 0
+#       rho = 0.4 
+
+clf_pcorrelation <- cor.test(~ f + cl, data = data406, method = 'pearson')
+print(clf_pcorrelation)
+#	 Pearson's product-moment correlation
+# t = 0.76083, df = 2, p-value = 0.5262
+# alternative hypothesis: true correlation is not equal to 0
+# 95 percent confidence interval:
+#   -0.8947074  0.9859297
+# sample estimates:
+#       cor = 0.4737743
+
+#########################################################################
+
+clb_scorrelation <- cor.test(data406$b, data406$cl, method = "spearman")
+print(clb_scorrelation)
+# 	Spearman's rank correlation rho
+# S = 8, p-value = 0.9167
+# alternative hypothesis: true rho is not equal to 0
+#       rho = 0.2
+
+clb_pcorrelation <- cor.test(~ b + cl, data = data406, method = 'pearson')
+print(clb_pcorrelation)
+#	 Pearson's product-moment correlation
+# t = 0.89558, df = 2, p-value = 0.465
+# alternative hypothesis: true correlation is not equal to 0
+# 95 percent confidence interval:
+#  -0.8770458  0.9880504
+# sample estimates:
+#       cor = 0.5350131 
+```
+Note: here, I've only included 2 examples from the analysis as it is far too long.
+```{r}
+data406
+```
+
+Here is how I will aproach it now
+```{r}
+library(car) # For cor.test()
+library(tidyverse) # rename(), mutate(), select(), mutate_if()
+data406 <- readxl::read_excel("/Users/appleid/Desktop/Toronto/Past Years/Third Year/Summer/Field Course/EEB406 Readings.xlsx")
+
+mod.data406 <- data406 |> rename("ec"="spec_cond", "cl"="chloride_a", "f"="fluoride_a", "b"="bromide_a", 
+                                 "n"="nitrate_a", "s"="sulfate_a", "na"="sodium_c", "k"="potassium_c", 
+                                 "l"="lithium_c","c"="calcium_c","mg"="magnesium_c") |> select(f,cl,b,n,s,l,na,k,c,mg) |> 
+  mutate_if(is.character, as.numeric) # https://stackoverflow.com/questions/26391921/how-to-convert-entire-dataframe-to-numeric-while-preserving-decimals
+
+compare.ions <- mod.data406 |> select(cl,n) 
+# Note: since I did my project of Cl & N, so it's not likely that I will change & use other ions. But still, just in case
+things.to.extract <- c("estimate","p.value")
+methods <- c("pearson","spearman") 
+# I remember that I wasn't sure which method to use. By having "methods" be an input, it makes changing it easier
+
+df <- data.frame(colnames(mod.data406)) |> rename("ions" = "colnames.mod.data406.")
+
+if(all(methods %in% c("pearson","spearman","kendall"))==F){
+  stop("We use cor.test here. Please only select from 'pearson', 'spearman', 'kendall'")}
+if(all(things.to.extract %in% c("statistic","parameter","p.value","estimate","null.value","alternative","method","data.name","conf.int"))==F){
+  stop("We use cor.test here, so you can only call on certain things. Here's the menue:
+             -'statistic': Test statistic
+             - 'parameter': degrees of freedom
+             - 'p.value': likelihood of the result under assuming null is true
+             - 'estimate': the correlation coefficient
+             - 'null.value': always gives back 0
+             - 'alternative': the alternative hypothesis
+             - 'method': how the association was measured. You should already know this
+             - 'data.name': names of the data being compared. You should already know this
+             - 'conf.int': confidence interval")}
+
+for(meth in methods){ 
+  
+  for (el in 1:length(compare.ions)){ 
+    results <- vector("list", ncol(mod.data406)) # Create an empty vector to hold results
+    
+    for (ele in 1:length(colnames(mod.data406))) { # Examine each possible combination & store them in a list
+      results[[ele]] <- cor.test(mod.data406[[ele]], compare.ions[[el]], method=meth)
+      }
+    for(thing in things.to.extract){
+      temp_list <- sapply(results, function(x){x[[thing]]}) # Originally wrote things.to.extract instead of thing here, lol
+      # Learned about sapply() from ChatGPT. Still looked up documentation
+      # Originally used lapply (as I wanted lists). However, the output, while correct, isn't easily readable, so used sapply
+      df <- df |> mutate(temp_list) # Add the values to the data frame
+      
+      names(df)[names(df) == "temp_list"] <- paste(colnames(compare.ions)[el],meth,thing,sep=" ")
+      # Originally was using mutate() but didn't work. ChatGPT suggested this & it works
+      # Don't know why I didn't think of this, expecially since this is the method I used above
+      # Apparently, rename(corr.list.name = "corr") means "take the existing column "corr" and rename it to
+      #             "paste(colnames(compare.ions)[el],meth,thing,sep=" ")"" (quoting ChatGPT)
+      # The method above tells R that use the value generated from paste(colnames(compare.ions)[el],meth,thing,sep=" ") as the new name
+    
+      }
+    }  
+}
+df
+```
+
+```{r}
+all(methods %in% c("pearson","spearman","kendall"))==F
+```
+
+```{r}
+`%!in%` = Negate(`%in%`)
+testing1 <- c("one","two")
+testing2 <-  c("one","apple")
+testing3 <- c("banana", "two")
+
+list1 <- c("one","two","three")
+ # test1: all in (True) (pass)
+ # test2: "apple" not in list1 (False) (pass)
+ # test3: "banana" not in list1 (False) (pass)
+list2 <- c("apple", "banana", "cantaloupe")
+ # test1: none of them match (False) (pass)
+ # test2: "one" not in list2 (False) (pass)
+ # test3: "two" not in list2 (False) (pass)
+list3 <- c("a","b","c")
+ # Should return False for all (pass)
+
+testing2 %in% list2
+```
+
+
+
+
+```{r}
+col1 <- c(1,1,1,2,2)
+col2 <- c(3,3,3,2,2)
+col3 <- c(1, 0,1,0,1)
+toy_df <- data.frame(col1, col2,col3)
+col4 <- col3*col2
+toy_df <- toy_df |> mutate(col4=col4)
+# (data406$f, data406$cl
+cor.test(toy_df$col1, toy_df$col2, method="pearson")$data.name
+```
+
+
+
