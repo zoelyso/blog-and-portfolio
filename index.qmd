@@ -5,9 +5,11 @@ format: html
 
 ## Hello
 
-Welcome to my portfolio / blog.
+Welcome to my portfolio.
 
 ## About me
-I am currently a University of Toronto student. I created this site as I have some experience with programming and data analysis (almost all in R) that I want to showcase. These are all my own personal projects (not any schoolwork that I have submitted, though it could be inspired by my lectures or a re-do of work from courses that have already ended).
+I am currently a University of Toronto student double majoring in Economics and EEB (Ecology and Evolutionary Biology).
+
+I created this site as I have some experience with programming and data analysis (almost all in R) that I want to showcase. These are all my own personal projects (some are schoolwork that I have submitted, some are re-do of work from courses that have already ended, or taking something submitted for school and re-doing it in a different method).
 
 ### Thank you for visiting!
