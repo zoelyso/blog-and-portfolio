@@ -12,4 +12,7 @@ I am currently a University of Toronto student double majoring in Economics and 
 
 I created this site as I have some experience with programming and data analysis (almost all in R) that I want to showcase. These are all my own personal projects (some are schoolwork that I have submitted, some are re-do of work from courses that have already ended, or taking something submitted for school and re-doing it in a different method).
 
+## Notes
+Please note that I would sometimes use AI to help with generating graphics, debugging, and learning about functions that I do not know about (after attempting to Google it and failing). I will point this out in my projects
+
 ### Thank you for visiting!
