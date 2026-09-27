@@ -1,0 +1,11 @@
+---
+title: "Navigation"
+format: html
+editor: visual
+---
+
+| Project | Topic | Languages | Summary |
+|---------|---------|----------|----------|----------|
+| [Zombies!](https://zoelyso.github.io/blog-and-portfolio/Zombies.html) | Disease modeling | R, Python | Adapted compartmental epidemic models to simulate zombie outbreak dynamics for different scenarios. Essentially web version of a research project for EEB314 in 2026. |
+| [EEB406 ReDo](https://zoelyso.github.io/blog-and-portfolio/EEB406_redo.html) | Data analysis | R | Rewrote some of the code I submitted as a part of my course project for EEB406 back in 2025. |
+|  |  |  |  |
