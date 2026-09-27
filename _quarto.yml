@@ -7,10 +7,10 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: Navigation.qmd
-        text: Navigation Help
       - href: index.qmd
         text: Home
+      - href: Navigation.qmd
+        text: Navigation Help
       - href: Zombies.qmd
         text: Zombies!
       - href: EEB406_redo.qmd
