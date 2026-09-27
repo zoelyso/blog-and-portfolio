@@ -3,7 +3,7 @@ Welcome. Here contains some of my R code from my personal projects (inspired by 
 
 Some of it will be mathematical modeling, some of it will be statistical analyses.
 
-On this branch stores the files for the site.
+On this branch stores the files are for the site.
 
 ## A note on AI use
 Please note that I would sometimes use AI to help with generating graphics, debugging, and learning about functions that I do not know about (after attempting to Google it and failing). I will point this out in my projects (I will mostly point it out in the code).
