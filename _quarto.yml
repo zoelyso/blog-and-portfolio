@@ -7,8 +7,8 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: Navigation Help
-        text: Navigation
+      - href: Navigation.qmd
+        text: Navigation Help
       - href: index.qmd
         text: Home
       - href: Zombies.qmd
