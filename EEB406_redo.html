@@ -303,6 +303,7 @@ sample estimates:
 <section id="i-think-i-like-to-easily-modify-my-inputs-to-get-different-outputs." class="level4">
 <h4 class="anchored" data-anchor-id="i-think-i-like-to-easily-modify-my-inputs-to-get-different-outputs.">- I think I like to easily modify my inputs to get different outputs.</h4>
 <p>For example, while I did my project on chloride and nitrate (and since this is based on something I have already submitted, it’s not like this will change), I still wrote it as if I may change it as I think this is how I would write it these days. However, I would still assume that the underlying dataset will is still the same one and wrote accordingly.</p>
+<p>When working on this, I assumed that I will still be using the same data sets (as it is what we have collected as a part of our coursework), but the methods by which I will analyse the data. This is why methods and things.to.extract are inputs needed in the for loops, as this allowed me to more easily change them out.</p>
 </section>
 <section id="i-like-to-write-the-modifiable-outputs-at-the-top." class="level4">
 <h4 class="anchored" data-anchor-id="i-like-to-write-the-modifiable-outputs-at-the-top.">- I like to write the modifiable outputs at the top.</h4>
@@ -358,33 +359,38 @@ dbl (21): wtemp, cond, spec_cond, fluoride_a, chloride_a, bromide_a, nitrite...
 <span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a><span class="st">             - 'data.name': names of the data being compared. You should already know this</span></span>
 <span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="st">             - 'conf.int': confidence interval"</span>)}</span>
 <span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(meth <span class="cf">in</span> methods){ </span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(meth <span class="cf">in</span> methods){ <span class="co"># Make sure we go over each method of analysis</span></span>
 <span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (el <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(compare.ions)){ <span class="co"># Note: el &amp; ele are numbers</span></span>
-<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>    results <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, <span class="fu">ncol</span>(mod.data406)) <span class="co"># Create an empty vector to hold results</span></span>
-<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (ele <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(<span class="fu">colnames</span>(mod.data406))) { </span>
-<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Examine each possible combination &amp; store them in a list</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (el <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(compare.ions)){ </span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Note: el &amp; ele are numbers</span></span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>    results <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, <span class="fu">ncol</span>(mod.data406)) <span class="co"># Create an empty vector to hold results</span></span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (ele <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(<span class="fu">colnames</span>(mod.data406))) { <span class="co"># Examine each possible combination, do the analysis, &amp; store them in a list</span></span>
 <span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>      results[[ele]] <span class="ot">&lt;-</span> <span class="fu">cor.test</span>(mod.data406[[ele]], compare.ions[[el]], <span class="at">method=</span>meth) </span>
 <span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Originally wrote as mod.data406[ele]. ChatGPT corrected it (I could have figured it out myself. I think I was just lazy.)</span></span>
 <span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(thing <span class="cf">in</span> things.to.extract){</span>
-<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>      temp_list <span class="ot">&lt;-</span> <span class="fu">sapply</span>(results, <span class="cf">function</span>(x){x[[thing]]}) <span class="co"># Originally wrote things.to.extract instead of thing here (a dumb mistake)</span></span>
-<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Learned about sapply() from ChatGPT. Still looked up documentation</span></span>
-<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Originally used lapply (as I wanted lists). However, the output, while correct, isn't easily readable, so used sapply</span></span>
-<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>      df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> <span class="fu">mutate</span>(temp_list) <span class="co"># Add the values to the data frame</span></span>
-<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>      <span class="fu">names</span>(df)[<span class="fu">names</span>(df) <span class="sc">==</span> <span class="st">"temp_list"</span>] <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="fu">colnames</span>(compare.ions)[el],meth,thing,<span class="at">sep=</span><span class="st">" "</span>)</span>
-<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Originally was using mutate() but didn't work. ChatGPT suggested this &amp; it works</span></span>
-<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Don't know why I didn't think of this, expecially since this is the method I used above</span></span>
-<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Apparently, rename(corr.list.name = "corr") means "take the existing column "corr" and rename it to</span></span>
-<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a>      <span class="co">#             "paste(colnames(compare.ions)[el],meth,thing,sep=" ")"" (quoting ChatGPT)</span></span>
-<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>      <span class="co"># The method above tells R that use the value generated from paste(colnames(compare.ions)[el],meth,thing,sep=" ") as the new name</span></span>
-<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a>      }</span>
-<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a>    }  </span>
-<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(thing <span class="cf">in</span> things.to.extract){ <span class="co"># Collect the relevant statistics from each analysis</span></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>      temp_list <span class="ot">&lt;-</span> <span class="fu">sapply</span>(results, <span class="cf">function</span>(x){x[[thing]]}) <span class="co"># Put the relevant statistics into a list</span></span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Originally wrote things.to.extract instead of thing here (a dumb mistake)</span></span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Learned about sapply() from ChatGPT. Still looked up documentation</span></span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Originally used lapply (as I wanted lists). However, the output, while correct, isn't easily readable, so used sapply</span></span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>      df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> <span class="fu">mutate</span>(temp_list) <span class="co"># Add the values to the data frame</span></span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Each time the relevant statistics are put into the data frame, the column will originally be called "temp_list".</span></span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>      <span class="co"># After that, the column name is immediately changed based on the ion and method used in the analysis.</span></span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Since the name is changed each time, mutate adds a new column instead of overwriting the previous column.</span></span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a>      <span class="fu">names</span>(df)[<span class="fu">names</span>(df) <span class="sc">==</span> <span class="st">"temp_list"</span>] <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="fu">colnames</span>(compare.ions)[el],meth,thing,<span class="at">sep=</span><span class="st">" "</span>)</span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Originally was using mutate() but didn't work. ChatGPT suggested this &amp; it works</span></span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Don't know why I didn't think of this, expecially since this is the method I used above</span></span>
+<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Apparently, rename(corr.list.name = "corr") means "take the existing column "corr" and rename it to</span></span>
+<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a>      <span class="co">#             "paste(colnames(compare.ions)[el],meth,thing,sep=" ")"" (quoting ChatGPT)</span></span>
+<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a>      <span class="co"># The method above tells R that use the value generated from paste(colnames(compare.ions)[el],meth,thing,sep=" ") as the new name</span></span>
+<span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a>    }  </span>
+<span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-62"><a href="#cb15-62" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ions cl pearson estimate cl pearson p.value n pearson estimate
 1     f           0.4737743       5.262257e-01         0.70379679
@@ -505,7 +511,7 @@ dbl (21): wtemp, cond, spec_cond, fluoride_a, chloride_a, bromide_a, nitrite...
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/lyzs-123\.github\.io\/blog-and-portfolio\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
